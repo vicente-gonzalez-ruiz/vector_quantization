@@ -1,2 +1,2 @@
-# vector_quantization
-Vector Quantization
+# Vector Quantization
+Basic information about VQ (Vector Quantization).
