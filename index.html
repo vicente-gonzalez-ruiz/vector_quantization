@@ -1,0 +1,236 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head> <title>Vector Quantization (VQ)</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<link href='index.css' rel='stylesheet' type='text/css' /> 
+<meta content='index.tex' name='src' /> 
+<script>window.MathJax = { tex: { tags: "ams", }, }; </script> 
+ <script async='async' id='MathJax-script' src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js' type='text/javascript'></script>  
+</head><body>
+   <div class='maketitle'>
+                                                                  
+
+                                                                  
+                                                                  
+
+                                                                  
+
+<h2 class='titleHead'><a href='https://github.com/vicente-gonzalez-ruiz/vector_quantization'>Vector Quantization (VQ)</a></h2>
+ <div class='author'><a href='https://cms.ual.es/UAL/personas/persona.htm?id=515256515553484875'><span class='ecrm-1200'>Vicente González Ruiz</span></a> <span class='ecrm-1200'>- </span><a href='https://cms.ual.es/UAL/universidad/departamentos/informatica/index.htm'><span class='ecrm-1200'>Depto Informática</span></a> <span class='ecrm-1200'>- </span><a href='https://www.ual.es'><span class='ecrm-1200'>UAL</span></a></div><br />
+<div class='date'><span class='ecrm-1200'>June 27, 2022</span></div>
+   </div>
+   <h3 class='likesectionHead' id='contents'><a id='x1-1000'></a>Contents</h3>
+   <div class='tableofcontents'>
+    <span class='sectionToc'>1 <a href='#definition' id='QQ2-1-2'>Definition</a></span>
+<br />    <span class='sectionToc'>2 <a href='#tcq' id='QQ2-1-3'>TCQ</a></span>
+<br />    <span class='sectionToc'>3 <a href='#matrixbased-implementation' id='QQ2-1-5'>Matrix-based implementation</a></span>
+<br />    <span class='sectionToc'>4 <a href='#optimization-of-tcq' id='QQ2-1-6'>Optimization of TCQ</a></span>
+<br />    <span class='sectionToc'>5 <a href='#resources' id='QQ2-1-7'>Resources</a></span>
+   </div>
+<!-- l. 8 --><p class='noindent'>
+</p>
+   <h3 class='sectionHead' id='definition'><span class='titlemark'>1   </span> <a id='x1-20001'></a>Definition</h3>
+<!-- l. 11 --><p class='noindent'>In VQ, samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization index by
+vector. Usually, the lengths of the quantization indexes are much shorter than the
+lengths of the vectors, generating the compression. Vector Quantization (VQ) can
+remove auto-correlation in the encoded signal and therefore, is more efficient in RD
+terms than Scalar Quantization (SQ).
+</p><!-- l. 30 --><p class='noindent'>
+</p>
+   <h3 class='sectionHead' id='tcq'><span class='titlemark'>2   </span> <a id='x1-30002'></a>TCQ</h3>
+                                                                  
+
+                                                                  
+<!-- l. 32 --><p class='noindent'>Trellis-Coded Quantization (TCQ) process vectors of samples, using a collection of
+non-overlapped scalar quantizers, and, depending on the flexibility to chose
+one of these quantizers to encode the sample \({\mathbf s}_i\) (after having quantized the
+sample \({\mathbf s}_{i-1}\)) we output a number of bits, for a given sequence of input samples,
+that select the optimal order of quantizers that minimize the distortion.
+Notice that the input is processed by blocks of samples, and for this reason,
+some people refers TCQ as a type of VQ. Therefore, TCQ inputs a block of
+samples and outputs a block of bits (always with the same length). The
+advantage of TCQ is that the output bits determine the order in which
+the quantizers must be used to minimize the distortion encoding the input
+block.
+</p><!-- l. 45 --><p class='indent'>   The number of output bits depends on the number of quantizers and the flexibility to select
+a quantizer<span class='footnote-mark'><a href='#fn1x0' id='fn1x0-bk'><sup class='textsuperscript'>1</sup></a></span><a id='x1-3001f1'></a>
+after having used a previous one (that can be the same). The transitions allowed
+between quantizers determine the so called <span class='ecti-1000'>trellis</span>-step, that has so many steps as
+symbols are in an input block. After building the complete trellis, the Viterbi
+algorithm <span class='cite'>[]</span> is used for selecting those sequence of quantizers that minimize the
+distortion.<span class='footnote-mark'><a href='#fn2x0' id='fn2x0-bk'><sup class='textsuperscript'>2</sup></a></span><a id='x1-3002f2'></a>
+</p><!-- l. 60 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='example'><a id='x1-40002'></a>Example</h4>
+<!-- l. 61 --><p class='noindent'>Lets suppose the following (scalar and uniform) quantizer <span class='cite'>[]</span>:
+                                                                  
+
+                                                                  
+</p>
+   <pre class='verbatim' id='verbatim-1'>
+-3.5   -2.5   -1.5   -0.5    0.5    1.5    2.5    3.5
+--+------+------+------+------+------+------+------+--
+ 000    001    010    011    100    101    110    111
+</pre>
+<!-- l. 67 --><p class='nopar'>
+</p><!-- l. 69 --><p class='indent'>   and that we want to quantize the input: 0.2, 1.6 and 2.3. If we use directly such
+quantizer we get:
+                                                                  
+
+                                                                  
+</p>
+   <pre class='verbatim' id='verbatim-2'>
+Input Output |Error| Code
+-------------------------
+  0.2    0.5     0.3  011
+  1.6    1.5     0.1  101
+  2.3    2.5     0.2  110
+</pre>
+<!-- l. 78 --><p class='nopar'>
+</p><!-- l. 80 --><p class='indent'>   The total error is (distortion) 0.6 and we need (rate) 9 bits.
+</p><!-- l. 82 --><p class='indent'>   Now lets use TCQ. Lets suppose that we have 4 quantizers:
+                                                                  
+
+                                                                  
+</p>
+   <pre class='verbatim' id='verbatim-3'>
+-3.5   -2.5   -1.5   -0.5    0.5    1.5    2.5    3.5
+--+------+------+------+------+------+------+------+--
+  :      :      :      :      :      :      :      :
+--+------:------:------:------+------:------:------:-- Q0 (00)
+  0      :      :      :      1      :      :      :
+---------+------:------:-------------+------:------:-- Q1 (01)
+         0      :      :             1      :      :
+----------------+------:--------------------+------:-- Q2 (10)
+                0      :                    1      :
+-----------------------+---------------------------+-- Q4 (11)
+                       0                           1
+</pre>
+<!-- l. 96 --><p class='nopar'>
+</p><!-- l. 98 --><p class='indent'>   and that, for example:
+                                                                  
+
+                                                                  
+</p>
+   <pre class='verbatim' id='verbatim-4'>
+FSM = [ [0, 2], [0, 2], [1, 3], [3, 1] ] # Finite State Machine
+</pre>
+<!-- l. 102 --><p class='nopar'>
+</p><!-- l. 104 --><p class='indent'>   Notice that <span class='obeylines-h'><span class='verb'><span class='ectt-1000'>FSM[0][0] = 0</span></span></span>, which means that we can use Q0 after using Q0,
+encoding a 0, <span class='obeylines-h'><span class='verb'><span class='ectt-1000'>FSM[0][1] = 2</span></span></span>, which means that we can use Q2 after using Q0,
+encoding a 1. Therefore, considering such FSM, we need only to output one bit to
+determine the next used quantizer.
+</p><!-- l. 109 --><p class='indent'>   Now, lets encode:
+                                                                  
+
+                                                                  
+</p>
+   <pre class='verbatim' id='verbatim-5'>
+Input     Q0       Q1       Q2         Q3
+------+-----------------------------------
+  0.2 |  0.3      1.3      1.7        0.7 &lt;- |Quantization errors|, first sample
+      |  | \     /   \    /   \      /  |
+      | 0|   1\ /      \/      \ /      |
+      |  |     /  \   /  \   /  \       |
+      |  |    /     / \  / \     \      |
+      |  |   /    /   /  \   \    \     |
+  1.6 | 0.3 1.3  1.7 0.7  0.3 1.3  1.7 0.7
+      |   +   +    +   +    +   +    +   +
+      | 1.1 0.1  0.1 0.1  0.9 0.9  1.9 1.9
+      |   =   =    =   =    =   =    =   =
+      | 1.4 1.4  1.8 0.8  1.2 2.2  3.6 2.6 &lt;- |Accumulated quantization errors|, second sample
+      |  | \     /   \    /   \      /  |
+      |  |    \ /      \/      \ /      |
+      |  |     /  \   /  \   /  \       |
+      |  |    /     / \  / \     \      |
+      |  |   /    /   /  \   \    \     |
+  2.3 | 1.4 0.8  1.2 2.6  1.4 0.8  1.2 2.6
+      |   +   +    +   +    +   +    +   +
+      | 1.8 1.8  0.8 0.8  0.2 0.2  1.2 1.2
+      |   =   =    =   =    =   =    =   =
+      | 3.2 2.6  2.0 3.4  1.6 1.0  2.4 3.8 &lt;- |Accumulated quantization errors|, third sample
+</pre>
+<!-- l. 135 --><p class='nopar'>
+</p><!-- l. 137 --><p class='indent'>   Therefore, the best combination of quantizers is (in reverse order) Q2,
+Q1, Q3, generating the code-word &lt;11&gt;&lt;0&gt;&lt;1&gt; and a total distortion of
+\(1.0\).
+</p><!-- l. 141 --><p class='noindent'>
+</p>
+   <h3 class='sectionHead' id='matrixbased-implementation'><span class='titlemark'>3   </span> <a id='x1-50003'></a>Matrix-based implementation</h3>
+                                                                  
+
+                                                                  
+   <pre class='verbatim' id='verbatim-6'>
+
+Encoding sample 0.2:
+
+             previous
+        Q0    Q1    Q2    Q3
+     +-----+-----+-----+-----+
+  Q0 | 0.3 |     |     |     |
+n    +-----+-----+-----+-----+
+e Q1 |     | 1.3 |     |     |
+x    +-----+-----+-----+-----+
+t Q2 |     |     | 1.7 |     |
+     +-----+-----+-----+-----+
+  Q3 |     |     |     | 0.7 |
+     +-----+-----+-----+-----+
+
+Encoding sample 1.6:
+
+             previous
+        Q0    Q1    Q2    Q3
+     +-----+-----+-----+-----+
+  Q0 | 1.4 | 1.4 |     |     |
+n    +-----+-----+-----+-----+
+e Q1 |     |     | 1.8 | 0.8 |
+x    +-----+-----+-----+-----+
+t Q2 | 1.2 | 2.2 |     |     |
+     +-----+-----+-----+-----+
+  Q3 |     |     | 3.6 | 2.6 |
+     +-----+-----+-----+-----+
+
+Encoding sample 2.3:
+
+             previous
+        Q0    Q1    Q2    Q3
+     +-----+-----+-----+-----+
+  Q0 | 3.2 | 2.6 |     |     |
+n    +-----+-----+-----+-----+
+e Q1 |     |     | 2.0 | 3.4 |
+x    +-----+-----+-----+-----+
+t Q2 | 1.6 | 1.0 |     |     |
+     +-----+-----+-----+-----+
+  Q3 |     |     | 2.9 | 3.8 |
+     +-----+-----+-----+-----+
+                                                                  
+
+                                                                  
+</pre>
+<!-- l. 186 --><p class='nopar'>
+</p><!-- l. 188 --><p class='indent'>   The minimum distortion is found at coordinate (Q2, Q1), which means that the
+last quantizer is Q2, the previous one is Q1, and if we go to row Q1 in the previous
+matrix, the minimum is found a column Q3. Therefore, the optimal sequence of
+quantizers is Q3, Q1, Q2.
+</p><!-- l. 193 --><p class='noindent'>
+</p>
+   <h3 class='sectionHead' id='optimization-of-tcq'><span class='titlemark'>4   </span> <a id='x1-60004'></a>Optimization of TCQ</h3>
+<!-- l. 194 --><p class='noindent'>Notice that if the FSM is fully connected (and therefore, the trellis too) the number
+of output bits will be higher and the distortion will be lower. This generates an
+optimization problem in which we must find the optimal FSM (number of
+quantizers and allowed transitions between them), that should minimize the RD
+curve.
+</p><!-- l. 200 --><p class='noindent'>
+</p>
+   <h3 class='sectionHead' id='resources'><span class='titlemark'>5   </span> <a id='x1-70005'></a>Resources</h3>
+   <div class='footnotes'><!-- l. 48 --><p class='indent'>     <span class='footnote-mark'><a href='#fn1x0-bk' id='fn1x0'><sup class='textsuperscript'>1</sup></a></span><span class='ecrm-0800'>The higher the flexibility, the higher the number of bits necessary to indicate the selected
+</span><span class='ecrm-0800'>quantizer.</span></p>
+<!-- l. 58 --><p class='indent'>     <span class='footnote-mark'><a href='#fn2x0-bk' id='fn2x0'><sup class='textsuperscript'>2</sup></a></span><span class='ecrm-0800'>Basically, Viterbi found a way of finding the most likely sequence of states of a finite-state
+</span><span class='ecrm-0800'>machine when the input (that describes the sequence) has been corrupted by the noise. In our case,
+</span><span class='ecrm-0800'>we want to find the sequence of states (quantizers) that minimizes the distortion (quantization
+</span><span class='ecrm-0800'>error).</span></p>                                                                                                                 </div>
+ 
+</body> 
+</html>
