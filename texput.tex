@@ -5,15 +5,22 @@
 \maketitle
 \tableofcontents
 
-\section{Definition}
+\section{Overview}
 %{{{
 
 In VQ, samples are quantized in groups (\emph{vectors}), producing a
-quantization index by vector.  Usually, the lengths of the
-quantization indexes are much shorter than the lengths of the vectors,
-generating the compression. Vector Quantization (VQ) can remove
-auto-correlation in the encoded signal and therefore, is more
-efficient in RD terms than Scalar Quantization (SQ).
+quantization index by vector~\cite{sayood2017introduction}.  Usually,
+the lengths of the quantization indexes are much shorter than the
+lengths of the vectors, generating the data compression. However, it
+is possible also to use an entropy codec con further compress the
+quantization indexes.
+%}}}
+
+\section{Vector Quantization vs Scalar Quantization}
+
+Vector Quantization (VQ) can remove auto-correlation in the encoded
+signal and therefore, is more efficient in RD
+terms~\cite{vruiz__information_theory} than Scalar Quantization (SQ).
 
 %Unfortunately, the
 %computational requirements of VQ are, by far, much higher than the
@@ -27,177 +34,66 @@ efficient in RD terms than Scalar Quantization (SQ).
 
 %}}}
 
-\section{TCQ}
+\section{Encoding and decoding}
+%{{{
 
-Trellis-Coded Quantization (TCQ) process vectors of samples, using a
-collection of non-overlapped scalar quantizers, and, depending on the
-flexibility to chose one of these quantizers to encode the sample
-${\mathbf s}_i$ (after having quantized the sample ${\mathbf
-  s}_{i-1}$) we output a number of bits, for a given sequence of input
-samples, that select the optimal order of quantizers that minimize the
-distortion. Notice that the input is processed by blocks of samples,
-and for this reason, some people refers TCQ as a type of
-VQ. Therefore, TCQ inputs a block of samples and outputs a block of
-bits (always with the same length). The advantage of TCQ is that the
-output bits determine the order in which the quantizers must be used
-to minimize the distortion encoding the input block.
+The VQ inputs blocks of $L$ elements (samples of speech, pixels of an
+image, etc.), usually using an adaptive algorithm, build a
+\emph{code-book} (a set of $L$-dimensional vectors called
+\emph{code-vectors} which are selected to be representative of the
+input), compare the input vectors with all the code-vectors, and
+outputs the index of the code-vector that minimizes some distortion
+measurement. In other words, if $\mathbf{x}$ is an input vector and
+$\mathbf{y}_j$ is the selected code-vector (of the code-book
+$\mathcal{C}=\{\mathbf{y}_i;i=0,1,\cdots,K-1\}$), it is satisfied that
+\begin{equation}
+  ||\mathbf{x}-\mathbf{y}_j||^2 \le || \mathbf{x}-\mathbf{y}_j||^2\qquad\forall\mathbf{y_i}\in\mathcal{C}.
+\end{equation}
 
-The number of output bits depends on the number of quantizers and the
-flexibility to select a quantizer\footnote{The higher the flexibility,
-the higher the number of bits necessary to indicate the selected
-quantizer.} after having used a previous one (that can be the
-same). The transitions allowed between quantizers determine the so
-called \emph{trellis}-step, that has so many steps as symbols are in
-an input block. After building the complete trellis, the Viterbi
-algorithm~\cite{} is used for selecting those sequence of quantizers
-that minimize the distortion.\footnote{Basically, Viterbi found a way
-of finding the most likely sequence of states of a finite-state
-machine when the input (that describes the sequence) has been
-corrupted by the noise. In our case, we want to find the sequence of
-states (quantizers) that minimizes the distortion (quantization
-error).}
+Because the build exactly the same codebook, it can retrieve the
+decompressed code-vector given its quantization index. Notice that,
+although the encoder likely have to perform a considerable amount of
+computations in order to build the codebook and to find the closest
+code-vector, the decoding consists simply of a table lookup.
 
-\subsection*{Example}
-Lets suppose the following (scalar and uniform) quantizer~\cite{}:
+If $K$ is the number of code-vectors in the code-book and the input is
+splitted in vectors of length $L$, the quantizer will use
+$\lceil\log_2 K\rceil=S$ bits per input vector. Therefore, the number
+of bits/sample would be $S/L$.
 
-\begin{verbatim}
--3.5   -2.5   -1.5   -0.5    0.5    1.5    2.5    3.5
---+------+------+------+------+------+------+------+--
- 000    001    010    011    100    101    110    111
-\end{verbatim}
+%}}}
 
-and that we want to quantize the input: 0.2, 1.6 and 2.3. If we use
-directly such quantizer we get:
+\section{Code-book design}
+%{{{
 
-\begin{verbatim}
-Input Output |Error| Code
--------------------------
-  0.2    0.5     0.3  011
-  1.6    1.5     0.1  101
-  2.3    2.5     0.2  110
-\end{verbatim}
+If the source output is correlated, vectors of source output values
+will tend to fall in clusters~\cite{sayood2017introduction}. The idea
+is to put in $\mathcal{C}$ a set of code-vectors that minimize the
+distortion of VQ. In other words, we must split the signal space (of dimenssion $L$) in a set of $K$ regions
+\begin{equation}
+  V_k=\{\mathbf{x}:d(\mathbf{x},\mathbf{y}_j) <
+  d(\mathbf{x},\mathbf{y}_i), \forall i\ne j\},
+\end{equation}
+of arbitrary shape.
 
-The total error is (distortion) 0.6 and we need (rate) 9 bits.
+\subsection{K-means}
 
-Now lets use TCQ. Lets suppose that we have 4 quantizers:
+If we know $K$ (the size of the code-book $\mathcal{C}$), we can find
+$\mathcal{C}$) using the K-means
+algorithm~\cite{hartigan1979algorithm,sayood2017introduction}. This
+algorithm computest$\mathcal{C}$ as the set of the centroid of each
+region $V_k$.
 
-\begin{verbatim}
--3.5   -2.5   -1.5   -0.5    0.5    1.5    2.5    3.5
---+------+------+------+------+------+------+------+--
-  :      :      :      :      :      :      :      :
---+------:------:------:------+------:------:------:-- Q0 (00)
-  0      :      :      :      1      :      :      :
----------+------:------:-------------+------:------:-- Q1 (01)
-         0      :      :             1      :      :
-----------------+------:--------------------+------:-- Q2 (10)
-                0      :                    1      :
------------------------+---------------------------+-- Q4 (11)
-                       0                           1                 
-\end{verbatim}
- 
-and that, for example:
+\subsection{The Linde, Buzo, and Gray (LGB) Algorithm}
 
-\begin{verbatim}
-FSM = [ [0, 2], [0, 2], [1, 3], [3, 1] ] # Finite State Machine
-\end{verbatim}
+The LGB Algorithm~\cite{linde1980algorithm} is a generalization of the
+Lloyd Algorithm~\cite{lloyd1982least}, where $K$ is estimated
+from the input vectors and then, the K-means Algorithm is used to
+compute the $L$-dimensional centroids of $\mathcal{C}$.
 
-Notice that \verb|FSM[0][0] = 0|, which means that we can use Q0 after
-using Q0, encoding a 0, \verb|FSM[0][1] = 2|, which means that we can
-use Q2 after using Q0, encoding a 1. Therefore, considering such FSM,
-we need only to output one bit to determine the next used quantizer.
-
-Now, lets encode:
-
-\begin{verbatim}
-Input     Q0       Q1       Q2         Q3
-------+-----------------------------------
-  0.2 |  0.3      1.3      1.7        0.7 <- |Quantization errors|, first sample
-      |  | \     /   \    /   \      /  |
-      | 0|   1\ /      \/      \ /      |
-      |  |     /  \   /  \   /  \       | 
-      |  |    /     / \  / \     \      |
-      |  |   /    /   /  \   \    \     |
-  1.6 | 0.3 1.3  1.7 0.7  0.3 1.3  1.7 0.7
-      |   +   +    +   +    +   +    +   +
-      | 1.1 0.1  0.1 0.1  0.9 0.9  1.9 1.9
-      |   =   =    =   =    =   =    =   =
-      | 1.4 1.4  1.8 0.8  1.2 2.2  3.6 2.6 <- |Accumulated quantization errors|, second sample
-      |  | \     /   \    /   \      /  |
-      |  |    \ /      \/      \ /      |
-      |  |     /  \   /  \   /  \       | 
-      |  |    /     / \  / \     \      |
-      |  |   /    /   /  \   \    \     |
-  2.3 | 1.4 0.8  1.2 2.6  1.4 0.8  1.2 2.6 
-      |   +   +    +   +    +   +    +   +
-      | 1.8 1.8  0.8 0.8  0.2 0.2  1.2 1.2
-      |   =   =    =   =    =   =    =   =
-      | 3.2 2.6  2.0 3.4  1.6 1.0  2.4 3.8 <- |Accumulated quantization errors|, third sample
-\end{verbatim}
-
-Therefore, the best combination of quantizers is (in reverse order)
-Q2, Q1, Q3, generating the code-word <11><0><1> and a total distortion
-of $1.0$.
-
-\section{Matrix-based implementation}
-
-\begin{verbatim}
-
-Encoding sample 0.2:
-
-             previous
-        Q0    Q1    Q2    Q3
-     +-----+-----+-----+-----+
-  Q0 | 0.3 |     |     |     |
-n    +-----+-----+-----+-----+
-e Q1 |     | 1.3 |     |     |
-x    +-----+-----+-----+-----+
-t Q2 |     |     | 1.7 |     |
-     +-----+-----+-----+-----+
-  Q3 |     |     |     | 0.7 |
-     +-----+-----+-----+-----+
-
-Encoding sample 1.6:
-
-             previous
-        Q0    Q1    Q2    Q3
-     +-----+-----+-----+-----+
-  Q0 | 1.4 | 1.4 |     |     |
-n    +-----+-----+-----+-----+
-e Q1 |     |     | 1.8 | 0.8 |
-x    +-----+-----+-----+-----+
-t Q2 | 1.2 | 2.2 |     |     |
-     +-----+-----+-----+-----+
-  Q3 |     |     | 3.6 | 2.6 |
-     +-----+-----+-----+-----+
-
-Encoding sample 2.3:
-
-             previous
-        Q0    Q1    Q2    Q3
-     +-----+-----+-----+-----+
-  Q0 | 3.2 | 2.6 |     |     |
-n    +-----+-----+-----+-----+
-e Q1 |     |     | 2.0 | 3.4 |
-x    +-----+-----+-----+-----+
-t Q2 | 1.6 | 1.0 |     |     |
-     +-----+-----+-----+-----+
-  Q3 |     |     | 2.9 | 3.8 |
-     +-----+-----+-----+-----+
-\end{verbatim}
-
-The minimum distortion is found at coordinate (Q2, Q1), which means
-that the last quantizer is Q2, the previous one is Q1, and if we go to
-row Q1 in the previous matrix, the minimum is found a column
-Q3. Therefore, the optimal sequence of quantizers is Q3, Q1, Q2.
-
-\section{Optimization of TCQ}
-Notice that if the FSM is fully connected (and therefore, the trellis
-too) the number of output bits will be higher and the distortion will
-be lower. This generates an optimization problem in which we must find
-the optimal FSM (number of quantizers and allowed transitions between
-them), that should minimize the RD curve.
+%}}}
 
 \section{Resources}
 
 \renewcommand{\addcontentsline}[3]{} % Remove functionality of \addcontentsline
-\bibliography{data-compression,signal-processing,DWT,image-processing}
+\bibliography{data-compression,signal-processing,DWT,image-processing,information_theory,pattern_recognition}
