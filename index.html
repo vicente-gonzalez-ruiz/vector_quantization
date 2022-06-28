@@ -35,7 +35,7 @@
 </p>
    <h3 class='sectionHead' id='overview'><span class='titlemark'>1   </span> <a id='x1-20001'></a>Overview</h3>
 <!-- l. 11 --><p class='noindent'>In VQ, samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization index by
-vector <span class='cite'>[<a href='#Xsayood2017introduction'>3</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
+vector <span class='cite'>[<a href='#Xsayood2017introduction'>5</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
 the lengths of the vectors, generating the data compression. However, it is
 possible also to use an entropy codec con further compress the quantization
 indexes.
@@ -69,7 +69,7 @@ number of bits/sample would be \(S/L\).
 </p>
    <h3 class='sectionHead' id='codebook-design'><span class='titlemark'>4   </span> <a id='x1-50004'></a>Code-book design</h3>
 <!-- l. 69 --><p class='noindent'>If the source output is correlated, vectors of source output values will tend to fall in
-clusters <span class='cite'>[<a href='#Xsayood2017introduction'>3</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
+clusters <span class='cite'>[<a href='#Xsayood2017introduction'>5</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
 of VQ. In other words, we must split the signal space (of dimenssion \(L\)) in a set of \(K\)
 regions \begin {equation}  V_k=\{\mathbf {x}:d(\mathbf {x},\mathbf {y}_j) &lt; d(\mathbf {x},\mathbf {y}_i), \forall i\ne j\},  \end {equation}
 of arbitrary shape.
@@ -77,7 +77,7 @@ of arbitrary shape.
 </p>
    <h4 class='subsectionHead' id='kmeans'><span class='titlemark'>4.1   </span> <a id='x1-60004.1'></a>K-means</h4>
 <!-- l. 81 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\)) using the K-means
-algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>2</a>, <a href='#Xsayood2017introduction'>3</a>]</span>. This algorithm computest\(\mathcal {C}\) as the set of the centroid of each region
+algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>2</a>, <a href='#Xsayood2017introduction'>5</a>]</span>. This algorithm computest\(\mathcal {C}\) as the set of the centroid of each region
 \(V_k\).
                                                                   
 
@@ -85,7 +85,7 @@ algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>2</a>, <a href
 </p><!-- l. 87 --><p class='noindent'>
 </p>
    <h4 class='subsectionHead' id='the-linde-buzo-and-gray-lgb-algorithm'><span class='titlemark'>4.2   </span> <a id='x1-70004.2'></a>The Linde, Buzo, and Gray (LGB) Algorithm</h4>
-<!-- l. 89 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<span class='ecbx-1000'>?</span>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<span class='ecbx-1000'>?</span>]</span>, where \(K\) is
+<!-- l. 89 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>3</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>4</a>]</span>, where \(K\) is
 estimated from the input vectors and then, the K-means Algorithm is used to
 compute the \(L\)-dimensional centroids of \(\mathcal {C}\).
 </p><!-- l. 96 --><p class='noindent'>
@@ -101,7 +101,15 @@ compute the \(L\)-dimensional centroids of \(\mathcal {C}\).
    </span><span class='ecti-1000'>statistics)</span>, 28(1):100–108, 1979.
    </p>
    <p class='bibitem'><span class='biblabel'>
- [3]<span class='bibsp'>   </span></span><a id='Xsayood2017introduction'></a>K. Sayood.   <a href='http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf'><span class='ecti-1000'>Introduction to Data Compression</span></a>.   Morgan  Kaufmann,
+ [3]<span class='bibsp'>   </span></span><a id='Xlinde1980algorithm'></a>Yoseph Linde, Andres Buzo, and Robert Gray. <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/LBG.pdf'>An algorithm for vector
+   quantizer design</a>. <span class='ecti-1000'>IEEE Transactions on communications</span>, 28(1):84–95, 1980.
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ [4]<span class='bibsp'>   </span></span><a id='Xlloyd1982least'></a>Stuart Lloyd.  <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/lloyd.pdf'>Least squares quantization in PCM</a>.  <span class='ecti-1000'>IEEE transactions
+   </span><span class='ecti-1000'>on information theory</span>, 28(2):129–137, 1982.
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ [5]<span class='bibsp'>   </span></span><a id='Xsayood2017introduction'></a>K. Sayood.   <a href='http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf'><span class='ecti-1000'>Introduction to Data Compression</span></a>.   Morgan  Kaufmann,
    2017.
 </p>
    </div>
