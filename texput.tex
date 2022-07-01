@@ -69,12 +69,23 @@ of bits/sample would be $S/L$.
 If the source output is correlated, vectors of source output values
 will tend to fall in clusters~\cite{sayood2017introduction}. The idea
 is to put in $\mathcal{C}$ a set of code-vectors that minimize the
-distortion of VQ. In other words, we must split the signal space (of dimenssion $L$) in a set of $K$ regions
+distortion of VQ. In other words, we must split the signal space (of
+dimenssion $L$) in a set of $K$ regions
 \begin{equation}
   V_k=\{\mathbf{x}:d(\mathbf{x},\mathbf{y}_j) <
   d(\mathbf{x},\mathbf{y}_i), \forall i\ne j\},
 \end{equation}
 of arbitrary shape.
+
+
+This is a combinatorial optimization problem in a rather large search
+space, which usually makes it impossible to determine a global optimum
+in adequate time. This is the reason why VQ methods only compute a
+``local'' optimum at best~\cite{burger2016digital}. Anyway, VQ is
+used, for example, in
+\href{https://en.wikipedia.org/wiki/Palette_(computing)}{``palletized''
+  images}.
+  
 
 \subsection{K-means}
 

@@ -19,7 +19,7 @@
 
 <h2 class='titleHead'><a href='https://github.com/vicente-gonzalez-ruiz/vector_quantization'>Vector Quantization (VQ)</a></h2>
  <div class='author'><a href='https://cms.ual.es/UAL/personas/persona.htm?id=515256515553484875'><span class='ecrm-1200'>Vicente González Ruiz</span></a> <span class='ecrm-1200'>- </span><a href='https://cms.ual.es/UAL/universidad/departamentos/informatica/index.htm'><span class='ecrm-1200'>Depto Informática</span></a> <span class='ecrm-1200'>- </span><a href='https://www.ual.es'><span class='ecrm-1200'>UAL</span></a></div><br />
-<div class='date'><span class='ecrm-1200'>June 28, 2022</span></div>
+<div class='date'><span class='ecrm-1200'>July 1, 2022</span></div>
    </div>
    <h3 class='likesectionHead' id='contents'><a id='x1-1000'></a>Contents</h3>
    <div class='tableofcontents'>
@@ -35,7 +35,7 @@
 </p>
    <h3 class='sectionHead' id='overview'><span class='titlemark'>1   </span> <a id='x1-20001'></a>Overview</h3>
 <!-- l. 11 --><p class='noindent'>In VQ, samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization index by
-vector <span class='cite'>[<a href='#Xsayood2017introduction'>5</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
+vector <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
 the lengths of the vectors, generating the data compression. However, it is
 possible also to use an entropy codec con further compress the quantization
 indexes.
@@ -46,7 +46,7 @@ indexes.
                                                                   
    <h3 class='sectionHead' id='vector-quantization-vs-scalar-quantization'><span class='titlemark'>2   </span> <a id='x1-30002'></a>Vector Quantization vs Scalar Quantization</h3>
 <!-- l. 21 --><p class='noindent'>Vector Quantization (VQ) can remove auto-correlation in the encoded signal
-and therefore, is more efficient in RD terms <span class='cite'>[<a href='#Xvruiz__information_theory'>1</a>]</span> than Scalar Quantization
+and therefore, is more efficient in RD terms <span class='cite'>[<a href='#Xvruiz__information_theory'>2</a>]</span> than Scalar Quantization
 (SQ).
 </p><!-- l. 37 --><p class='noindent'>
 </p>
@@ -69,47 +69,58 @@ number of bits/sample would be \(S/L\).
 </p>
    <h3 class='sectionHead' id='codebook-design'><span class='titlemark'>4   </span> <a id='x1-50004'></a>Code-book design</h3>
 <!-- l. 69 --><p class='noindent'>If the source output is correlated, vectors of source output values will tend to fall in
-clusters <span class='cite'>[<a href='#Xsayood2017introduction'>5</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
+clusters <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
 of VQ. In other words, we must split the signal space (of dimenssion \(L\)) in a set of \(K\)
 regions \begin {equation}  V_k=\{\mathbf {x}:d(\mathbf {x},\mathbf {y}_j) &lt; d(\mathbf {x},\mathbf {y}_i), \forall i\ne j\},  \end {equation}
 of arbitrary shape.
-</p><!-- l. 79 --><p class='noindent'>
+</p><!-- l. 81 --><p class='indent'>   This is a combinatorial optimization problem in a rather large search space, which
+usually makes it impossible to determine a global optimum in adequate time. This is
+the reason why VQ methods only compute a “local” optimum at best <span class='cite'>[<a href='#Xburger2016digital'>1</a>]</span>. Anyway,
+VQ is used, for example, in <a href='https://en.wikipedia.org/wiki/Palette_(computing)'>“palletized” images</a>.
+</p><!-- l. 90 --><p class='noindent'>
 </p>
    <h4 class='subsectionHead' id='kmeans'><span class='titlemark'>4.1   </span> <a id='x1-60004.1'></a>K-means</h4>
-<!-- l. 81 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\)) using the K-means
-algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>2</a>, <a href='#Xsayood2017introduction'>5</a>]</span>. This algorithm computest\(\mathcal {C}\) as the set of the centroid of each region
-\(V_k\).
                                                                   
 
                                                                   
-</p><!-- l. 87 --><p class='noindent'>
+<!-- l. 92 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\)) using the K-means
+algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>3</a>, <a href='#Xsayood2017introduction'>6</a>]</span>. This algorithm computest\(\mathcal {C}\) as the set of the centroid of each region
+\(V_k\).
+</p><!-- l. 98 --><p class='noindent'>
 </p>
    <h4 class='subsectionHead' id='the-linde-buzo-and-gray-lgb-algorithm'><span class='titlemark'>4.2   </span> <a id='x1-70004.2'></a>The Linde, Buzo, and Gray (LGB) Algorithm</h4>
-<!-- l. 89 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>3</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>4</a>]</span>, where \(K\) is
+<!-- l. 100 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>4</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>5</a>]</span>, where \(K\) is
 estimated from the input vectors and then, the K-means Algorithm is used to
 compute the \(L\)-dimensional centroids of \(\mathcal {C}\).
-</p><!-- l. 96 --><p class='noindent'>
+</p><!-- l. 107 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='resources'><span class='titlemark'>5   </span> <a id='x1-80005'></a>Resources</h3>
    <div class='thebibliography'>
    <p class='bibitem'><span class='biblabel'>
- [1]<span class='bibsp'>   </span></span><a id='Xvruiz__information_theory'></a>V. González-Ruiz. <a href='https://vicente-gonzalez-ruiz.github.io/information_theory/'>Information Theory</a>.
+ [1]<span class='bibsp'>   </span></span><a id='Xburger2016digital'></a>W. Burger and M.J. Burge.  <a href='https://educons.edu.rs/wp-content/uploads/2020/05/2016-Digital-Image-Processing.pdf'><span class='ecti-1000'>Digital Image Processing: An Algorithmic
+   </span><span class='ecti-1000'>Introduction Using Java</span></a>. Springer, 2016.
    </p>
    <p class='bibitem'><span class='biblabel'>
- [2]<span class='bibsp'>   </span></span><a id='Xhartigan1979algorithm'></a>John A Hartigan and Manchek A Wong. <a href='https://www.jstor.org/stable/pdf/2346830.pdf?casa_token=OpmDCC-xvB8AAAAA:XsNY6uI435vqjFaoRw_NG8huJq90gTYJ8fqsfwUPZrWiG3Br-eJ-WxftbmDy8ZD7GcFx5STPmU58HnjqbVG8Y-XSK1didSwaovvumCLzYg4Y9CltmX1G'>Algorithm AS 136: A k-means
+ [2]<span class='bibsp'>   </span></span><a id='Xvruiz__information_theory'></a>V. González-Ruiz. <a href='https://vicente-gonzalez-ruiz.github.io/information_theory/'>Information Theory</a>.
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ [3]<span class='bibsp'>   </span></span><a id='Xhartigan1979algorithm'></a>John A Hartigan and Manchek A Wong. <a href='https://www.jstor.org/stable/pdf/2346830.pdf?casa_token=OpmDCC-xvB8AAAAA:XsNY6uI435vqjFaoRw_NG8huJq90gTYJ8fqsfwUPZrWiG3Br-eJ-WxftbmDy8ZD7GcFx5STPmU58HnjqbVG8Y-XSK1didSwaovvumCLzYg4Y9CltmX1G'>Algorithm AS 136: A k-means
    clustering algorithm</a>. <span class='ecti-1000'>Journal of the royal statistical society. series c (applied
    </span><span class='ecti-1000'>statistics)</span>, 28(1):100–108, 1979.
    </p>
    <p class='bibitem'><span class='biblabel'>
- [3]<span class='bibsp'>   </span></span><a id='Xlinde1980algorithm'></a>Yoseph Linde, Andres Buzo, and Robert Gray. <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/LBG.pdf'>An algorithm for vector
+ [4]<span class='bibsp'>   </span></span><a id='Xlinde1980algorithm'></a>Yoseph Linde, Andres Buzo, and Robert Gray. <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/LBG.pdf'>An algorithm for vector
    quantizer design</a>. <span class='ecti-1000'>IEEE Transactions on communications</span>, 28(1):84–95, 1980.
    </p>
    <p class='bibitem'><span class='biblabel'>
- [4]<span class='bibsp'>   </span></span><a id='Xlloyd1982least'></a>Stuart Lloyd.  <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/lloyd.pdf'>Least squares quantization in PCM</a>.  <span class='ecti-1000'>IEEE transactions
+ [5]<span class='bibsp'>   </span></span><a id='Xlloyd1982least'></a>Stuart Lloyd.  <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/lloyd.pdf'>Least squares quantization in PCM</a>.  <span class='ecti-1000'>IEEE transactions
    </span><span class='ecti-1000'>on information theory</span>, 28(2):129–137, 1982.
+                                                                  
+
+                                                                  
    </p>
    <p class='bibitem'><span class='biblabel'>
- [5]<span class='bibsp'>   </span></span><a id='Xsayood2017introduction'></a>K. Sayood.   <a href='http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf'><span class='ecti-1000'>Introduction to Data Compression</span></a>.   Morgan  Kaufmann,
+ [6]<span class='bibsp'>   </span></span><a id='Xsayood2017introduction'></a>K. Sayood.   <a href='http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf'><span class='ecti-1000'>Introduction to Data Compression</span></a>.   Morgan  Kaufmann,
    2017.
 </p>
    </div>
