@@ -1,15 +1,18 @@
-<!DOCTYPE html> 
-<html lang='en-US' xml:lang='en-US'> 
-<head> <title>Vector Quantization (VQ)</title> 
-<meta charset='utf-8' /> 
-<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
-<meta content='width=device-width,initial-scale=1' name='viewport' /> 
-<link href='index.css' rel='stylesheet' type='text/css' /> 
-<meta content='index.tex' name='src' /> 
-<script>window.MathJax = { tex: { tags: "ams", }, }; </script> 
- <script async='async' id='MathJax-script' src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js' type='text/javascript'></script>  
-</head><body>
-   <div class='maketitle'>
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" 
+"http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd" > 
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title>Vector Quantization &#x0028;VQ&#x0029;</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)" /> 
+<meta name="originator" content="TeX4ht (https://tug.org/tex4ht/)" /> 
+<!-- xhtml,mathml,html --> 
+<meta name="src" content="index.tex" /> 
+<link rel="stylesheet" type="text/css" href="index.css" /> 
+</head><body 
+>
+   <div class="maketitle">
                                                                   
 
                                                                   
@@ -17,113 +20,495 @@
 
                                                                   
 
-<h2 class='titleHead'><a href='https://github.com/vicente-gonzalez-ruiz/vector_quantization'>Vector Quantization (VQ)</a></h2>
- <div class='author'><a href='https://cms.ual.es/UAL/personas/persona.htm?id=515256515553484875'><span class='ecrm-1200'>Vicente González Ruiz</span></a> <span class='ecrm-1200'>- </span><a href='https://cms.ual.es/UAL/universidad/departamentos/informatica/index.htm'><span class='ecrm-1200'>Depto Informática</span></a> <span class='ecrm-1200'>- </span><a href='https://www.ual.es'><span class='ecrm-1200'>UAL</span></a></div><br />
-<div class='date'><span class='ecrm-1200'>July 1, 2022</span></div>
+<h2 class="titleHead"><a 
+href="https://github.com/vicente-gonzalez-ruiz/vector_quantization" >Vector Quantization &#x0028;VQ&#x0029;</a></h2>
+ <div class="author" ><a 
+href="https://cms.ual.es/UAL/personas/persona.htm?id=515256515553484875" ><span 
+class="ecrm-1200">Vicente Gonz</span><span 
+class="ecrm-1200">&#x00E1;</span><span 
+class="ecrm-1200">lez Ruiz</span></a> <span 
+class="ecrm-1200">- </span><a 
+href="https://cms.ual.es/UAL/universidad/departamentos/informatica/index.htm" ><span 
+class="ecrm-1200">Depto Inform</span><span 
+class="ecrm-1200">&#x00E1;</span><span 
+class="ecrm-1200">tica</span></a> <span 
+class="ecrm-1200">- </span><a 
+href="https://www.ual.es" ><span 
+class="ecrm-1200">UAL</span></a></div><br />
+<div class="date" ><span 
+class="ecrm-1200">December 4, 2022</span></div>
    </div>
-   <h3 class='likesectionHead' id='contents'><a id='x1-1000'></a>Contents</h3>
-   <div class='tableofcontents'>
-    <span class='sectionToc'>1 <a href='#overview' id='QQ2-1-2'>Overview</a></span>
-<br />    <span class='sectionToc'>2 <a href='#vector-quantization-vs-scalar-quantization' id='QQ2-1-3'>Vector Quantization vs Scalar Quantization</a></span>
-<br />    <span class='sectionToc'>3 <a href='#encoding-and-decoding' id='QQ2-1-4'>Encoding and decoding</a></span>
-<br />    <span class='sectionToc'>4 <a href='#codebook-design' id='QQ2-1-5'>Code-book design</a></span>
-<br />     <span class='subsectionToc'>4.1 <a href='#kmeans' id='QQ2-1-6'>K-means</a></span>
-<br />     <span class='subsectionToc'>4.2 <a href='#the-linde-buzo-and-gray-lgb-algorithm' id='QQ2-1-7'>The Linde, Buzo, and Gray (LGB) Algorithm</a></span>
-<br />    <span class='sectionToc'>5 <a href='#resources' id='QQ2-1-8'>Resources</a></span>
+   <h3 class="likesectionHead"><a 
+ id="x1-1000"></a>Contents</h3>
+   <div class="tableofcontents">
+   &#x00A0;<span class="sectionToc" >1 <a 
+href="#x1-20001" id="QQ2-1-2">Overview</a></span>
+<br />   &#x00A0;<span class="sectionToc" >2 <a 
+href="#x1-30002" id="QQ2-1-3">Vector Quantization vs Scalar Quantization</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3 <a 
+href="#x1-40003" id="QQ2-1-4">Encoding and decoding</a></span>
+<br />   &#x00A0;<span class="sectionToc" >4 <a 
+href="#x1-50004" id="QQ2-1-5">Code-book design</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsectionToc" >4.1 <a 
+href="#x1-60004.1" id="QQ2-1-6">K-means</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsectionToc" >4.2 <a 
+href="#x1-70004.2" id="QQ2-1-7">The Linde, Buzo, and Gray &#x0028;LGB&#x0029; Algorithm</a></span>
+<br />   &#x00A0;<span class="sectionToc" >5 <a 
+href="#x1-80005" id="QQ2-1-8">Vector Quantization of Gray-scale Images</a></span>
+<br />   &#x00A0;<span class="sectionToc" >6 <a 
+href="#x1-90006" id="QQ2-1-9">Resources</a></span>
    </div>
-<!-- l. 8 --><p class='noindent'>
+<!--l. 8--><p class="noindent" >
 </p>
-   <h3 class='sectionHead' id='overview'><span class='titlemark'>1   </span> <a id='x1-20001'></a>Overview</h3>
-<!-- l. 11 --><p class='noindent'>In VQ, samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization index by
-vector <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-20001"></a>Overview</h3>
+<!--l. 11--><p class="noindent" >In VQ, samples are quantized in groups &#x0028;<span 
+class="ecti-1000">vectors</span>&#x0029;, producing a quantization index by
+vector&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xsayood2017introduction">9</a>&#x005D;</span>. Usually, the lengths of the quantization indexes are much shorter than
 the lengths of the vectors, generating the data compression. However, it is
 possible also to use an entropy codec con further compress the quantization
 indexes.
-</p><!-- l. 19 --><p class='noindent'>
-</p>
                                                                   
 
                                                                   
-   <h3 class='sectionHead' id='vector-quantization-vs-scalar-quantization'><span class='titlemark'>2   </span> <a id='x1-30002'></a>Vector Quantization vs Scalar Quantization</h3>
-<!-- l. 21 --><p class='noindent'>Vector Quantization (VQ) can remove auto-correlation in the encoded signal
-and therefore, is more efficient in RD terms <span class='cite'>[<a href='#Xvruiz__information_theory'>2</a>]</span> than Scalar Quantization
-(SQ).
-</p><!-- l. 37 --><p class='noindent'>
+</p><!--l. 19--><p class="noindent" >
 </p>
-   <h3 class='sectionHead' id='encoding-and-decoding'><span class='titlemark'>3   </span> <a id='x1-40003'></a>Encoding and decoding</h3>
-<!-- l. 40 --><p class='noindent'>The VQ inputs blocks of \(L\) elements (samples of speech, pixels of an image, etc.),
-usually using an adaptive algorithm, build a <span class='ecti-1000'>code-book </span>(a set of \(L\)-dimensional vectors
-called <span class='ecti-1000'>code-vectors </span>which are selected to be representative of the input), compare the
-input vectors with all the code-vectors, and outputs the index of the code-vector
-that minimizes some distortion measurement. In other words, if \(\mathbf {x}\) is an input
-vector and \(\mathbf {y}_j\) is the selected code-vector (of the code-book \(\mathcal {C}=\{\mathbf {y}_i;i=0,1,\cdots ,K-1\}\)), it is satisfied that \begin {equation}  ||\mathbf {x}-\mathbf {y}_j||^2 \le || \mathbf {x}-\mathbf {y}_j||^2\qquad \forall \mathbf {y_i}\in \mathcal {C}.  \end {equation}
-</p><!-- l. 53 --><p class='indent'>   Because the build exactly the same codebook, it can retrieve the decompressed
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-30002"></a>Vector Quantization vs Scalar Quantization</h3>
+<!--l. 21--><p class="noindent" >Vector Quantization &#x0028;VQ&#x0029; can remove auto-correlation in the encoded signal
+and therefore, is more e&#xFB03;cient in RD terms&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__information_theory">3</a>&#x005D;</span> than Scalar Quantization
+&#x0028;SQ&#x0029;.
+</p><!--l. 37--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-40003"></a>Encoding and decoding</h3>
+<!--l. 40--><p class="noindent" >The VQ inputs blocks of <!--l. 40--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>
+elements &#x0028;samples of speech, pixels of an image, etc.&#x0029;, usually
+using an adaptive algorithm, build a <span 
+class="ecti-1000">code-book </span>&#x0028;a set of
+<!--l. 42--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>-dimensional
+vectors called <span 
+class="ecti-1000">code-vectors </span>which are selected to be representative of the input&#x0029;,
+compare the input vectors with all the code-vectors, and outputs the index of the
+code-vector that minimizes some distortion measurement. In other words, if
+<!--l. 46--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle></math> is an input vector and
+<!--l. 47--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+><mi 
+>j</mi></mrow></msub 
+></math> is the selected code-vector
+&#x0028;of the code-book <!--l. 48--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi> <mo 
+class="MathClass-rel">=</mo> <mo 
+class="MathClass-open" stretchy="false">&#x007B;</mo><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+><mi 
+>i</mi></mrow></msub 
+><mo 
+class="MathClass-punc">;</mo><mi 
+>i</mi> <mo 
+class="MathClass-rel">=</mo> <mn>0</mn><mo 
+class="MathClass-punc">,</mo><mn>1</mn><mo 
+class="MathClass-punc">,</mo><mo 
+class="MathClass-rel">&#x22EF;</mo><mspace width="0.17em" class="thinspace"/><mo 
+class="MathClass-punc">,</mo><mi 
+>K</mi> <mo 
+class="MathClass-bin">&#x2212;</mo> <mn>1</mn><mo 
+class="MathClass-close" stretchy="false">&#x007D;</mo></math>&#x0029;,
+it is satis&#xFB01;ed that </p><table class="equation"><tr><td>
+<!--l. 49--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                    <mstyle 
+   id="x1-4001r1"  class="label" ></mstyle><!--endlabel--><mo 
+class="MathClass-open" stretchy="false">&#x007C;</mo><mo 
+class="MathClass-rel">&#x007C;</mo><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle> <mo 
+class="MathClass-bin">&#x2212;</mo><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+><mi 
+>j</mi></mrow></msub 
+><mo 
+class="MathClass-rel">&#x007C;</mo><msup><mrow 
+><mo 
+class="MathClass-rel">&#x007C;</mo></mrow><mrow 
+><mn>2</mn></mrow></msup 
+> <mo 
+class="MathClass-rel">&#x2264;</mo><mo 
+class="MathClass-rel">&#x007C;</mo><mo 
+class="MathClass-rel">&#x007C;</mo><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle> <mo 
+class="MathClass-bin">&#x2212;</mo><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+>
+<mi 
+>j</mi></mrow></msub 
+><mo 
+class="MathClass-rel">&#x007C;</mo><msup><mrow 
+><mo 
+class="MathClass-rel">&#x007C;</mo></mrow><mrow 
+><mn>2</mn></mrow></msup 
+><mspace width="2em" class="qquad"/><mi 
+class="MathClass-op">&#x2200;</mi><mo> &#x2061;<!--FUNCTION APPLICATION--></mo><mstyle mathvariant="bold"><msub><mrow 
+><mi 
+>y</mi></mrow><mrow 
+>
+<mi 
+>i</mi></mrow></msub 
+></mstyle> <mo 
+class="MathClass-rel">&#x2208;</mo><mi 
+mathvariant="bold-script">&#x1D49E;</mi><mo 
+class="MathClass-punc">.</mo>
+</math></td><td class="eq-no">&#x0028;1&#x0029;</td></tr></table>
+<!--l. 53--><p class="indent" >   Because the build exactly the same codebook, it can retrieve the decompressed
 code-vector given its quantization index. Notice that, although the encoder likely
 have to perform a considerable amount of computations in order to build the
-codebook and to find the closest code-vector, the decoding consists simply of a table
+codebook and to &#xFB01;nd the closest code-vector, the decoding consists simply of a table
 lookup.
-</p><!-- l. 59 --><p class='indent'>   If \(K\) is the number of code-vectors in the code-book and the input is splitted in
-vectors of length \(L\), the quantizer will use \(\lceil \log _2 K\rceil =S\) bits per input vector. Therefore, the
-number of bits/sample would be \(S/L\).
-</p><!-- l. 66 --><p class='noindent'>
+</p><!--l. 59--><p class="indent" >   If <!--l. 59--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math> is
+the number of code-vectors in the code-book and the input is splitted in vectors of length
+<!--l. 60--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>, the quantizer
+will use <!--l. 61--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-open" stretchy="false">&#x2308;</mo><msub><mrow 
+><mi class="qopname">log</mi><mo> &#x2061;<!--FUNCTION APPLICATION--> </mo><!--nolimits--></mrow><mrow 
+><mn>2</mn></mrow></msub 
+><mi 
+>K</mi><mo 
+class="MathClass-close" stretchy="false">&#x2309;</mo> <mo 
+class="MathClass-rel">=</mo> <mi 
+>S</mi></math>
+bits per input vector. Therefore, the number of bits/sample would be
+<!--l. 62--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>S</mi><mo 
+class="MathClass-bin">&#x2215;</mo><mi 
+>L</mi></math>.
+                                                                  
+
+                                                                  
+</p><!--l. 66--><p class="noindent" >
 </p>
-   <h3 class='sectionHead' id='codebook-design'><span class='titlemark'>4   </span> <a id='x1-50004'></a>Code-book design</h3>
-<!-- l. 69 --><p class='noindent'>If the source output is correlated, vectors of source output values will tend to fall in
-clusters <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
-of VQ. In other words, we must split the signal space (of dimenssion \(L\)) in a set of \(K\)
-regions \begin {equation}  V_k=\{\mathbf {x}:d(\mathbf {x},\mathbf {y}_j) &lt; d(\mathbf {x},\mathbf {y}_i), \forall i\ne j\},  \end {equation}
-of arbitrary shape.
-</p><!-- l. 81 --><p class='indent'>   This is a combinatorial optimization problem in a rather large search space, which
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x1-50004"></a>Code-book design</h3>
+<!--l. 69--><p class="noindent" >If the source output is correlated, vectors of source output
+values will tend to fall in clusters&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xsayood2017introduction">9</a>&#x005D;</span>. The idea is to put in
+<!--l. 71--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi></math> a set of
+code-vectors that minimize the distortion of VQ. In other words, we must split the signal space
+&#x0028;of dimenssion <!--l. 73--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>&#x0029;
+in a set of <!--l. 73--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math>
+regions </p><table class="equation"><tr><td>
+<!--l. 74--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                  <mstyle 
+   id="x1-5001r2"  class="label" ></mstyle><!--endlabel--><msub><mrow 
+><mo 
+class="MathClass-open" stretchy="false">V</mo> </mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel">=</mo> <mo 
+class="MathClass-open" stretchy="false">&#x007B;</mo><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle> <mo 
+class="MathClass-punc">:</mo> <mi 
+>d</mi><mo 
+class="MathClass-open" stretchy="false">&#x0028;</mo><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle><mo 
+class="MathClass-punc">,</mo><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+><mi 
+>j</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">&#x0029;</mo> <mo 
+class="MathClass-rel">&#x003C;</mo> <mi 
+>d</mi><mo 
+class="MathClass-open" stretchy="false">&#x0028;</mo><mstyle mathvariant="bold"><mi 
+>x</mi></mstyle><mo 
+class="MathClass-punc">,</mo><msub><mrow 
+><mstyle mathvariant="bold"><mi 
+>y</mi></mstyle></mrow><mrow 
+><mi 
+>i</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">&#x0029;</mo><mo 
+class="MathClass-punc">,</mo><mi 
+class="MathClass-op">&#x2200;</mi><mo> &#x2061;<!--FUNCTION APPLICATION--></mo><mi 
+>i</mi><mo 
+class="MathClass-rel">&#x2260;</mo><mi 
+>j</mi><mo 
+class="MathClass-close" stretchy="false">&#x007D;</mo><mo 
+class="MathClass-punc">,</mo>
+</math></td><td class="eq-no">&#x0028;2&#x0029;</td></tr></table>
+<!--l. 78--><p class="indent" >   of arbitrary shape.
+</p><!--l. 81--><p class="indent" >   This is a combinatorial optimization problem in a rather large search space, which
 usually makes it impossible to determine a global optimum in adequate time. This is
-the reason why VQ methods only compute a “local” optimum at best <span class='cite'>[<a href='#Xburger2016digital'>1</a>]</span>. Anyway,
-VQ is used, for example, in <a href='https://en.wikipedia.org/wiki/Palette_(computing)'>“palletized” images</a>.
-</p><!-- l. 90 --><p class='noindent'>
+the reason why VQ methods only compute a &#x201C;local&#x201D; optimum at best&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xburger2016digital">1</a>&#x005D;</span>. Anyway,
+VQ is used, for example, in <a 
+href="https://en.wikipedia.org/wiki/Palette_(computing)" >&#x201C;palletized&#x201D; images</a>.
+</p><!--l. 90--><p class="noindent" >
 </p>
-   <h4 class='subsectionHead' id='kmeans'><span class='titlemark'>4.1   </span> <a id='x1-60004.1'></a>K-means</h4>
+   <h4 class="subsectionHead"><span class="titlemark">4.1   </span> <a 
+ id="x1-60004.1"></a>K-means</h4>
+<!--l. 92--><p class="noindent" >If we know <!--l. 92--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math> &#x0028;the size
+of the code-book <!--l. 92--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi></math>&#x0029;,
+we can &#xFB01;nd <!--l. 93--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi></math>&#x0029;
+using the K-means algorithm&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xhartigan1979algorithm">6</a>,&#x00A0;<a 
+href="#Xsayood2017introduction">9</a>&#x005D;</span>. This algorithm
+computest<!--l. 95--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi></math> as the set of the
+centroid of each region <!--l. 96--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>V</mi> </mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>.
                                                                   
 
                                                                   
-<!-- l. 92 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\)) using the K-means
-algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>3</a>, <a href='#Xsayood2017introduction'>6</a>]</span>. This algorithm computest\(\mathcal {C}\) as the set of the centroid of each region
-\(V_k\).
-</p><!-- l. 98 --><p class='noindent'>
+</p><!--l. 98--><p class="noindent" >
 </p>
-   <h4 class='subsectionHead' id='the-linde-buzo-and-gray-lgb-algorithm'><span class='titlemark'>4.2   </span> <a id='x1-70004.2'></a>The Linde, Buzo, and Gray (LGB) Algorithm</h4>
-<!-- l. 100 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>4</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>5</a>]</span>, where \(K\) is
-estimated from the input vectors and then, the K-means Algorithm is used to
-compute the \(L\)-dimensional centroids of \(\mathcal {C}\).
-</p><!-- l. 107 --><p class='noindent'>
+   <h4 class="subsectionHead"><span class="titlemark">4.2   </span> <a 
+ id="x1-70004.2"></a>The Linde, Buzo, and Gray &#x0028;LGB&#x0029; Algorithm</h4>
+<!--l. 100--><p class="noindent" >The LGB Algorithm&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xlinde1980algorithm">7</a>&#x005D;</span> is a generalization of the Lloyd Algorithm&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xlloyd1982least">8</a>&#x005D;</span>, where
+<!--l. 101--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math> is
+estimated from the input vectors and then, the K-means Algorithm is used to compute the
+<!--l. 103--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>-dimensional
+centroids of <!--l. 103--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+mathvariant="bold-script">&#x1D49E;</mi></math>.
+</p><!--l. 107--><p class="noindent" >
 </p>
-   <h3 class='sectionHead' id='resources'><span class='titlemark'>5   </span> <a id='x1-80005'></a>Resources</h3>
-   <div class='thebibliography'>
-   <p class='bibitem'><span class='biblabel'>
- [1]<span class='bibsp'>   </span></span><a id='Xburger2016digital'></a>W. Burger and M.J. Burge.  <a href='https://educons.edu.rs/wp-content/uploads/2020/05/2016-Digital-Image-Processing.pdf'><span class='ecti-1000'>Digital Image Processing: An Algorithmic
-   </span><span class='ecti-1000'>Introduction Using Java</span></a>. Springer, 2016.
-   </p>
-   <p class='bibitem'><span class='biblabel'>
- [2]<span class='bibsp'>   </span></span><a id='Xvruiz__information_theory'></a>V. González-Ruiz. <a href='https://vicente-gonzalez-ruiz.github.io/information_theory/'>Information Theory</a>.
-   </p>
-   <p class='bibitem'><span class='biblabel'>
- [3]<span class='bibsp'>   </span></span><a id='Xhartigan1979algorithm'></a>John A Hartigan and Manchek A Wong. <a href='https://www.jstor.org/stable/pdf/2346830.pdf?casa_token=OpmDCC-xvB8AAAAA:XsNY6uI435vqjFaoRw_NG8huJq90gTYJ8fqsfwUPZrWiG3Br-eJ-WxftbmDy8ZD7GcFx5STPmU58HnjqbVG8Y-XSK1didSwaovvumCLzYg4Y9CltmX1G'>Algorithm AS 136: A k-means
-   clustering algorithm</a>. <span class='ecti-1000'>Journal of the royal statistical society. series c (applied
-   </span><span class='ecti-1000'>statistics)</span>, 28(1):100–108, 1979.
-   </p>
-   <p class='bibitem'><span class='biblabel'>
- [4]<span class='bibsp'>   </span></span><a id='Xlinde1980algorithm'></a>Yoseph Linde, Andres Buzo, and Robert Gray. <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/LBG.pdf'>An algorithm for vector
-   quantizer design</a>. <span class='ecti-1000'>IEEE Transactions on communications</span>, 28(1):84–95, 1980.
-   </p>
-   <p class='bibitem'><span class='biblabel'>
- [5]<span class='bibsp'>   </span></span><a id='Xlloyd1982least'></a>Stuart Lloyd.  <a href='http://mlsp.cs.cmu.edu/courses/fall2010/class14/lloyd.pdf'>Least squares quantization in PCM</a>.  <span class='ecti-1000'>IEEE transactions
-   </span><span class='ecti-1000'>on information theory</span>, 28(2):129–137, 1982.
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-80005"></a>Vector Quantization of Gray-scale Images</h3>
+<!--l. 111--><p class="noindent" >The compression ratio &#x0028;and distortion&#x0029; of our lossy image compressor can be
+controled by means of quantization. At this point we have basically two
+alternatives:
+     </p><ol  class="enumerate1" >
+<li 
+  class="enumerate" id="x1-8002x1">
+     <!--l. 115--><p class="noindent" ><span 
+class="ecbx-1000">Scalar  Quantization  &#x0028;SQ&#x0029;</span>:  where  each  pixel  is  quantized  without
+     considering the rest of pixels in the image&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__scalar_quantization">4</a>&#x005D;</span>.
+     </p></li>
+<li 
+  class="enumerate" id="x1-8004x2">
+     <!--l. 118--><p class="noindent" ><span 
+class="ecbx-1000">Vector   Quantization   &#x0028;VQ&#x0029;</span>:   when   the   pixels   are   quantized
+     block-by-block &#x0028;2D vectors&#x0029;&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__vector_quantization">5</a>&#x005D;</span>.</p></li></ol>
+<!--l. 121--><p class="noindent" >Notice that VQ exploits the spatial correlation, but SQ doesn&#x2019;t. For this reason, by
+default, we will use PNG after SQ, because PNG can remove the spatial redundancy.
+In the case of VQ, only the statistical redundancy remains, that can be exploited by
+any entropy codec &#x0028;and obviously, any image codec&#x0029;.
+</p><!--l. 127--><p class="indent" >   If we can found 2D redundancy in an gray-scale image&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__image_IO">2</a>&#x005D;</span>, Vector Quantization
+&#x0028;VQ&#x0029;&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__vector_quantization">5</a>&#x005D;</span> applied to the spatial domain of images can provide better RD curves than
+Scalar Quantization &#x0028;SQ&#x0029;&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__scalar_quantization">4</a>&#x005D;</span>. After using VQ on the image we will obtain an matrix of
+quantization indexes and we can use PNG as an entropy codec to remove the statistical
+redundancy.<span class="footnote-mark"><a 
+href="index2.html#fn1x0"><sup class="textsuperscript">1</sup></a></span><a 
+ id="x1-8005f1"></a> 
+Let&#x2019;s denote such image codec by VQ+PNG.
+</p><!--l. 143--><p class="indent" >   If VQ+PNG is used to compress an image, we must realize that:
+                                                                  
+
+                                                                  
+     </p><ol  class="enumerate1" >
+<li 
+  class="enumerate" id="x1-8007x1">
+     <!--l. 145--><p class="noindent" >The rate of the code-stream &#x0028;for example, the number of bits/pixels obtained
+     after compressing&#x0029; depends on the size <!--l. 146--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>
+     of the vectors &#x0028;usually squared blocks of pixels&#x0029; and number the <!--l. 147--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math>
+     of di&#xFB00;erent vectors that we consider in the code-book&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__vector_quantization">5</a>&#x005D;</span>. Notice that,
+     without considering PNG, we will generate <!--l. 150--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-open" stretchy="false">&#x2308;</mo><msub><mrow 
+><mi class="qopname">log</mi><mo> &#x2061;<!--FUNCTION APPLICATION--> </mo><!--nolimits--></mrow><mrow 
+><mn>2</mn></mrow></msub 
+><mi 
+>K</mi><mo 
+class="MathClass-close" stretchy="false">&#x2309;</mo></math>
+     bits per quantization index, and one quantization index will be generated
+     each <!--l. 152--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>
+     input pixels.<span class="footnote-mark"><a 
+href="index3.html#fn2x0"><sup class="textsuperscript">2</sup></a></span><a 
+ id="x1-8008f2"></a> 
+     Hopefully, after using PNG on the indexes, this number of bits/vector will
+     be futher reduced.
+     </p></li>
+<li 
+  class="enumerate" id="x1-8010x2">
+     <!--l. 156--><p class="noindent" >The distortion generated by VQ depends on
+     <!--l. 156--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>L</mi></math>,
+     <!--l. 156--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math>,
+     but also depends on:
+         </p><ol  class="enumerate2" >
+<li 
+  class="enumerate" id="x1-8012x1">
+         <!--l. 159--><p class="noindent" >The  hability  of  VQ  to  chose  the  best  vectors  that  will  be  used
+         in the code-stream. Di&#xFB00;erent algorithms will provide di&#xFB00;erent RD
+         curves&#x00A0;<span class="cite">&#x005B;<a 
+href="#Xvruiz__information_theory">3</a>&#x005D;</span>.
+         </p></li>
+<li 
+  class="enumerate" id="x1-8014x2">
+         <!--l. 162--><p class="noindent" >The content of the input image. For example, images with complex
+         textures will require, in general, smaller vectors or larger code-books.</p></li></ol>
+     </li></ol>
+   <h3 class="sectionHead"><span class="titlemark">6   </span> <a 
+ id="x1-90006"></a>Resources</h3>
+   <div class="thebibliography">
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;1&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xburger2016digital"></a>W.&#x00A0;Burger and M.J. Burge.  <a 
+href="https://educons.edu.rs/wp-content/uploads/2020/05/2016-Digital-Image-Processing.pdf" ><span 
+class="ecti-1000">Digital Image Processing: An Algorithmic</span>
+   <span 
+class="ecti-1000">Introduction Using Java</span></a>. Springer, 2016.
                                                                   
 
                                                                   
    </p>
-   <p class='bibitem'><span class='biblabel'>
- [6]<span class='bibsp'>   </span></span><a id='Xsayood2017introduction'></a>K. Sayood.   <a href='http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf'><span class='ecti-1000'>Introduction to Data Compression</span></a>.   Morgan  Kaufmann,
-   2017.
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;2&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xvruiz__image_IO"></a>V.&#x00A0;Gonz&#x00E1;lez-Ruiz. <a 
+href="https://vicente-gonzalez-ruiz.github.io/image_IO/" >Image IO</a>.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;3&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xvruiz__information_theory"></a>V.&#x00A0;Gonz&#x00E1;lez-Ruiz. <a 
+href="https://vicente-gonzalez-ruiz.github.io/information_theory/" >Information Theory</a>.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;4&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xvruiz__scalar_quantization"></a>V.&#x00A0;Gonz&#x00E1;lez-Ruiz. <a 
+href="https://vicente-gonzalez-ruiz.github.io/scalar_quantization/" >Scalar Quantization</a>.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;5&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xvruiz__vector_quantization"></a>V.&#x00A0;Gonz&#x00E1;lez-Ruiz. <a 
+href="https://vicente-gonzalez-ruiz.github.io/vector_quantization/" >Vector Quantization</a>.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;6&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xhartigan1979algorithm"></a>John&#x00A0;A Hartigan and Manchek&#x00A0;A Wong. <a 
+href="https://www.jstor.org/stable/pdf/2346830.pdf?casa_token=OpmDCC-xvB8AAAAA:XsNY6uI435vqjFaoRw_NG8huJq90gTYJ8fqsfwUPZrWiG3Br-eJ-WxftbmDy8ZD7GcFx5STPmU58HnjqbVG8Y-XSK1didSwaovvumCLzYg4Y9CltmX1G" >Algorithm AS 136: A k-means
+   clustering algorithm</a>. <span 
+class="ecti-1000">Journal of the royal statistical society. series c &#x0028;applied</span>
+   <span 
+class="ecti-1000">statistics&#x0029;</span>, 28&#x0028;1&#x0029;:100&#x2013;108, 1979.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;7&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xlinde1980algorithm"></a>Yoseph Linde, Andres Buzo, and Robert Gray. <a 
+href="http://mlsp.cs.cmu.edu/courses/fall2010/class14/LBG.pdf" >An algorithm for vector
+   quantizer design</a>. <span 
+class="ecti-1000">IEEE Transactions on communications</span>, 28&#x0028;1&#x0029;:84&#x2013;95, 1980.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;8&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xlloyd1982least"></a>Stuart Lloyd.  <a 
+href="http://mlsp.cs.cmu.edu/courses/fall2010/class14/lloyd.pdf" >Least squares quantization in PCM</a>.  <span 
+class="ecti-1000">IEEE transactions</span>
+   <span 
+class="ecti-1000">on information theory</span>, 28&#x0028;2&#x0029;:129&#x2013;137, 1982.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ &#x005B;9&#x005D;<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ id="Xsayood2017introduction"></a>K.&#x00A0;Sayood.    <a 
+href="http://rahilshaikh.weebly.com/uploads/1/1/6/3/11635894/data_compression.pdf" ><span 
+class="ecti-1000">Introduction  to  Data  Compression</span></a>  <a 
+href="https://people.cs.nctu.edu.tw/~cmliu/Courses/Compression/" ><span 
+class="ecti-1000">&#x0028;Slides&#x0029;</span></a>.    Morgan
+   Kaufmann, 2017.
 </p>
    </div>
     
-</body> 
-</html>
+</body></html> 
+
+                                                                  
+
+
