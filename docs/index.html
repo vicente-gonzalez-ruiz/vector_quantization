@@ -19,7 +19,7 @@
 
 <h2 class='titleHead'><a href='https://github.com/vicente-gonzalez-ruiz/vector_quantization'>Vector Quantization (VQ)</a></h2>
  <div class='author'><a href='https://cms.ual.es/UAL/personas/persona.htm?id=515256515553484875'><span class='ecrm-1200'>Vicente González Ruiz</span></a> <span class='ecrm-1200'>- </span><a href='https://cms.ual.es/UAL/universidad/departamentos/informatica/index.htm'><span class='ecrm-1200'>Depto Informática</span></a> <span class='ecrm-1200'>- </span><a href='https://www.ual.es'><span class='ecrm-1200'>UAL</span></a></div><br />
-<div class='date'><span class='ecrm-1200'>December 21, 2022</span></div>
+<div class='date'><span class='ecrm-1200'>December 27, 2022</span></div>
    </div>
    <h3 class='likesectionHead' id='contents'><a id='x1-1000'></a>Contents</h3>
    <div class='tableofcontents'>
@@ -35,78 +35,78 @@
 <!-- l. 8 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='overview'><span class='titlemark'>1   </span> <a id='x1-20001'></a>Overview</h3>
-<!-- l. 11 --><p class='noindent'>In VQ, samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization index by
-vector <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. Usually, the lengths of the quantization indexes are much shorter than
-the lengths of the vectors, generating the data compression. However, it is
+<!-- l. 11 --><p class='noindent'>In VQ, the input samples are quantized in groups (<span class='ecti-1000'>vectors</span>), producing a quantization
+index by vector <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. Usually, the lengths of the quantization indexes are much shorter
+than the lengths of the vectors, generating the data compression. However, it is
 possible also to use an entropy codec con further compress the quantization
 indexes.
                                                                   
 
                                                                   
-</p><!-- l. 19 --><p class='noindent'>
+</p><!-- l. 20 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='vector-quantization-vs-scalar-quantization'><span class='titlemark'>2   </span> <a id='x1-30002'></a>Vector Quantization vs Scalar Quantization</h3>
-<!-- l. 21 --><p class='noindent'>Vector Quantization (VQ) can remove auto-correlation in the encoded signal
+<!-- l. 23 --><p class='noindent'>Vector Quantization (VQ) can remove auto-correlation in the encoded signal
 and therefore, is more efficient in RD terms <span class='cite'>[<a href='#Xvruiz__information_theory'>2</a>]</span> than Scalar Quantization
 (SQ).
-</p><!-- l. 37 --><p class='noindent'>
+</p><!-- l. 39 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='encoding-and-decoding'><span class='titlemark'>3   </span> <a id='x1-40003'></a>Encoding and decoding</h3>
-<!-- l. 40 --><p class='noindent'>The VQ inputs blocks of \(L\) elements (samples of speech, pixels of an image, etc.),
-usually using an adaptive algorithm, build a <span class='ecti-1000'>code-book </span>(a set of \(L\)-dimensional vectors
-called <span class='ecti-1000'>code-vectors </span>which are selected to be representative of the input), compare the
-input vectors with all the code-vectors, and outputs the index of the code-vector
+<!-- l. 42 --><p class='noindent'>VQ inputs blocks of \(L\) elements (samples of speech, pixels of an image, etc.), usually
+using an adaptive algorithm, build a <span class='ecti-1000'>code-book </span>(a set of \(L\)-dimensional vectors called
+<span class='ecti-1000'>code-vectors </span>which are selected to be representative of the input), compare the input
+vectors with all the code-vectors, and outputs the index of the code-vector
 that minimizes some distortion measurement. In other words, if \(\mathbf {x}\) is an input
 vector and \(\mathbf {y}_j\) is the selected code-vector (of the code-book \(\mathcal {C}=\{\mathbf {y}_i;i=0,1,\cdots ,K-1\}\)), it is satisfied that \begin {equation}  ||\mathbf {x}-\mathbf {y}_j||^2 \le || \mathbf {x}-\mathbf {y}_j||^2\qquad \forall \mathbf {y_i}\in \mathcal {C}.  \end {equation}
-</p><!-- l. 53 --><p class='indent'>   Because the decoder build exactly the same code-book, it can retrieve the
+</p><!-- l. 55 --><p class='indent'>   Because the decoder build exactly the same code-book, it can retrieve the
 decompressed code-vector given its quantization index. Notice that, although the
 encoder likely have to perform a considerable amount of computations in order to
 build the codebook and to find the closest code-vector, the decoding consists simply
 of a table lookup.
-</p><!-- l. 59 --><p class='indent'>   If \(K\) is the number of code-vectors in the code-book and the input is splitted in
+</p><!-- l. 61 --><p class='indent'>   If \(K\) is the number of code-vectors in the code-book and the input is splitted in
 vectors of length \(L\), the quantizer will use \(\lceil \log _2 K\rceil =S\) bits per input vector. Therefore, the
 number of bits/sample would be \(S/L\).
-</p><!-- l. 66 --><p class='noindent'>
+</p><!-- l. 68 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='codebook-design'><span class='titlemark'>4   </span> <a id='x1-50004'></a>Code-book design</h3>
-<!-- l. 69 --><p class='noindent'>If the source output is correlated, vectors of source output values will tend to fall in
+<!-- l. 71 --><p class='noindent'>If the source output is correlated, vectors of source output values will tend to fall in
 clusters <span class='cite'>[<a href='#Xsayood2017introduction'>6</a>]</span>. The idea is to put in \(\mathcal {C}\) a set of code-vectors that minimize the distortion
 of VQ. In other words, we must split the signal space (of dimenssion \(L\)) in a set of \(K\)
 regions \begin {equation}  V_k=\{\mathbf {x}:d(\mathbf {x},\mathbf {y}_j) &lt; d(\mathbf {x},\mathbf {y}_i), \forall i\ne j\},  \end {equation}
 of arbitrary shape.
-</p><!-- l. 80 --><p class='indent'>   This is a combinatorial optimization problem in a rather large search space, which
+</p><!-- l. 82 --><p class='indent'>   This is a combinatorial optimization problem in a rather large search space, which
 usually makes it impossible to determine a global optimum in adequate time. This is
 the reason why VQ methods only compute a “local” optimum at best <span class='cite'>[<a href='#Xburger2016digital'>1</a>]</span>. Anyway,
 VQ is used, for example, in <a href='https://en.wikipedia.org/wiki/Palette_(computing)'>“palletized” images</a>.
-</p><!-- l. 88 --><p class='indent'>   Notice that we will output \(\lceil \log _2 K\rceil \) bits per quantization index, and one quantization
-index will be generated each \(L\) input samples, resulting in a quantizer’s rate of \(\frac {\lceil \log _2 K\rceil }{L}\)bits per
-sample.
+</p><!-- l. 90 --><p class='indent'>   Notice that we will output \(\lceil \log _2 K\rceil \) bits per quantization index, and one quantization
+index will be generated by each \(L\) input samples, resulting in a quantizer’s rate of \(\frac {\lceil \log _2 K\rceil }{L}\) bits
+per sample.
                                                                   
 
                                                                   
-</p><!-- l. 95 --><p class='noindent'>
+</p><!-- l. 97 --><p class='noindent'>
 </p>
    <h4 class='subsectionHead' id='using-kmeans-to-find-the-codebook'><span class='titlemark'>4.1   </span> <a id='x1-60004.1'></a>Using K-means to find the code-book</h4>
-<!-- l. 97 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\)) using the K-means
+<!-- l. 99 --><p class='noindent'>If we know \(K\) (the size of the code-book \(\mathcal {C}\)), we can find \(\mathcal {C}\) using the K-means
 algorithm <span class='cite'>[<a href='#Xhartigan1979algorithm'>3</a>, <a href='#Xsayood2017introduction'>6</a>]</span>. This algorithm computes \(\mathcal {C}\) as the set of the centroids of each region
 \(V_k\).
-</p><!-- l. 103 --><p class='noindent'>
+</p><!-- l. 105 --><p class='noindent'>
 </p>
    <h4 class='subsectionHead' id='the-linde-buzo-and-gray-lgb-algorithm'><span class='titlemark'>4.2   </span> <a id='x1-70004.2'></a>The Linde, Buzo, and Gray (LGB) Algorithm</h4>
-<!-- l. 105 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>4</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>5</a>]</span>, where \(K\) is
+<!-- l. 107 --><p class='noindent'>The LGB Algorithm <span class='cite'>[<a href='#Xlinde1980algorithm'>4</a>]</span> is a generalization of the Lloyd Algorithm <span class='cite'>[<a href='#Xlloyd1982least'>5</a>]</span>, where \(K\) is
 estimated from the input vectors and then, the K-means algorithm is used to
 compute the \(L\)-dimensional centroids of \(\mathcal {C}\).
-</p><!-- l. 110 --><p class='noindent'>
+</p><!-- l. 112 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='distortion'><span class='titlemark'>5   </span> <a id='x1-80005'></a>Distortion</h3>
-<!-- l. 111 --><p class='noindent'>The distortion generated by VQ depends on \(L\), \(K\), but also depends on:
+<!-- l. 113 --><p class='noindent'>The distortion generated by VQ depends on \(L\), \(K\), but also depends on:
      </p><ol class='enumerate1'>
 <li class='enumerate' id='x1-8002x1'>The hability of VQ to chose the best vectors that will be used in the
      code-stream. Different algorithms will provide different RD curves <span class='cite'>[<a href='#Xvruiz__information_theory'>2</a>]</span>.
      </li>
 <li class='enumerate' id='x1-8004x2'>The content of the input. For example, images with complex textures will
      require, in general, smaller vectors or larger code-books.</li></ol>
-<!-- l. 122 --><p class='noindent'>
+<!-- l. 124 --><p class='noindent'>
 </p>
    <h3 class='sectionHead' id='references'><span class='titlemark'>6   </span> <a id='x1-90006'></a>References</h3>
    <div class='thebibliography'>
